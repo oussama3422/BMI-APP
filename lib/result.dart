@@ -9,6 +9,8 @@ class Result extends StatelessWidget {
   final double result;
   final int age;
 
+  static const routeName='result-page';
+
   String get returnresultString {
     String textresult = '';
     if (result >= 30)
@@ -37,20 +39,20 @@ class Result extends StatelessWidget {
               children: [
                 Text(
                   'Gender : ${isMale ? "Male" : "Female"}',
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 Text(
                   'Result : ${result.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 Text(
                   'Healthness : $returnresultString',
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.headline2,
                   textAlign: TextAlign.center,
                 ),
                 Text(
                   'Age : $age',
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ],
             ),
