@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          'cm',
+                          'CM',
                           style: Theme.of(context).textTheme.headline1,
                         ),
                       ],
