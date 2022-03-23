@@ -9,7 +9,7 @@ class Result extends StatelessWidget {
   final double result;
   final int age;
 
-  static const routeName='result-page';
+  // static const routeName='result-page';
 
   String get returnresultString {
     String textresult = '';
