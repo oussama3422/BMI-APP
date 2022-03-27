@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: isLandscape? Colors.purple:Colors.teal,
         title: const Text('BMI (Body Mass Index)'),
         centerTitle: true,
       ),
@@ -145,33 +146,43 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
           ),
-          isWindow 
+          isWindow && !isLandscape
               ? Expanded(
                   flex: 1,
-                  child: Row(
-                    children: [
-                      Container(
-                         child:expandedMethod2(context, 'Weight'),
-                      ),
-                      const SizedBox(width: 12),
-                     Container(
-                       child:expandedMethod2(context, 'Age'),
-                       ),
-                    ],
-                  ),
-                )
+                  child: isWindow
+                      ? Row(
+                          children: [
+                            Container(
+                              child: expandedMethod2(context, 'Weight'),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              child: expandedMethod2(context, 'Age'),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Container(
+                              child: expandedMethod2(context, 'Weight'),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              child: expandedMethod2(context, 'Age'),
+                            ),
+                          ],
+                        ))
+              // ::::::::::::::::This is Only if the device iS Landscape:::::::::::::::::::
               : Expanded(
                   child: Padding(
                     padding: isLandscape
                         ? const EdgeInsets.all(0.0)
                         : const EdgeInsets.all(0.0),
-                    child: Row
-                    (
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: 
-                      [
+                      children: [
                         expandedMethod2(context, 'Weight'),
-                        isLandscape? const SizedBox(width: 20) : const SizedBox(width: 0),
+                        const SizedBox(width: 20),
                         expandedMethod2(context, 'Age'),
                       ],
                     ),
@@ -180,11 +191,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             color: Colors.teal,
             width: double.infinity,
-            height: isLandscape && !isWindow ? height/10 : height/15,
-            child: TextButton
-            (
+            height: isLandscape && !isWindow ? height / 10 : height / 15,
+            child: TextButton(
                 onPressed: () {
-                  var result2 = weight/pow(heightVal/100,2);
+                  var result2 = weight / pow(heightVal / 100, 2);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -197,8 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
                 child: Text('Calculate',
-                    style: Theme.of(context).textTheme.headline1)
-            ),
+                    style: Theme.of(context).textTheme.headline1)),
           ),
         ],
       ),
@@ -220,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(13),
                     color: isMale && typeName == 'Male' ||
                             !isMale && typeName == 'Female'
-                        ? Colors.teal
+                        ? Colors.purple
                         : Colors.blueGrey,
                   ),
                   child: Column(
@@ -293,126 +302,192 @@ class _HomeScreenState extends State<HomeScreen> {
     var isWindow = Platform.isWindows;
     var isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    return isLandscape && !isWindow
-        ? Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(13),
-                  color: Colors.blueGrey,
+    if (isLandscape)
+      return Expanded(
+        child: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              color: Colors.purple,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  typeName == 'Age' ? 'Age : ' : 'Weight : ',
+                  style: Theme.of(context).textTheme.headline1,
                 ),
-                child: Row(
+                const SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  typeName == 'Age' ? '$age' : '$weight',
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      typeName == 'Age' ? 'Age : ' : 'Weight : ',
-                      style: Theme.of(context).textTheme.headline1,
+                    FloatingActionButton(
+                      heroTag: typeName == 'Age'
+                          ? 'decrease Age'
+                          : ' decrease Weight',
+                      onPressed: () {
+                        setState(() {
+                          typeName == 'Age' ? age-- : weight--;
+                        });
+                      },
+                      child: const Icon(Icons.remove, size: 30),
+                      mini: true,
                     ),
-                    const SizedBox(
-                      width: 20,
+                    FloatingActionButton(
+                      heroTag: typeName == 'Age'
+                          ? 'Increase Age'
+                          : 'Increase Weight',
+                      onPressed: () {
+                        setState(() {
+                          typeName == 'Age' ? age++ : weight++;
+                        });
+                      },
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                      ),
+                      mini: true,
                     ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    if (isWindow)
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: Colors.blueGrey,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                typeName == 'Age' ? 'Age' : 'Weight',
+                style: Theme.of(context).textTheme.headline1,
+              ),
+              Column(
+                children: [
+                  Text(
+                    typeName == 'Age' ? '$age' : '$weight',
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                    heroTag:
+                        typeName == 'Age' ? 'decrease Age' : ' decrease Weight',
+                    onPressed: () {
+                      setState(() {
+                        typeName == 'Age' ? age-- : weight--;
+                      });
+                    },
+                    child: const Icon(Icons.remove, size: 30),
+                    mini: true,
+                  ),
+                  const SizedBox(width: 10),
+                  FloatingActionButton(
+                    heroTag:
+                        typeName == 'Age' ? 'Increase Age' : 'Increase Weight',
+                    onPressed: () {
+                      setState(() {
+                        typeName == 'Age' ? age++ : weight++;
+                      });
+                    },
+                    child: const Icon(
+                      Icons.add,
+                      size: 30,
+                    ),
+                    mini: true,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+        if(!isLandscape && !isWindow)
+          return Expanded(
+            child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+            width: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: Colors.blueGrey,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  typeName == 'Age' ? 'Age' : 'Weight',
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+                Column(
+                  children: [
                     Text(
                       typeName == 'Age' ? '$age' : '$weight',
                       style: Theme.of(context).textTheme.headline2,
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FloatingActionButton(
-                          heroTag: typeName == 'Age'
-                              ? 'decrease Age'
-                              : ' decrease Weight',
-                          onPressed: () {
-                            setState(() {
-                              typeName == 'Age' ? age-- : weight--;
-                            });
-                          },
-                          child: const Icon(Icons.remove, size: 30),
-                          mini: true,
-                        ),
-                        FloatingActionButton(
-                          heroTag: typeName == 'Age'
-                              ? 'Increase Age'
-                              : 'Increase Weight',
-                          onPressed: () {
-                            setState(() {
-                              typeName == 'Age' ? age++ : weight++;
-                            });
-                          },
-                          child: const Icon(
-                            Icons.add,
-                            size: 30,
-                          ),
-                          mini: true,
-                        ),
-                      ],
-                    ),
                   ],
                 ),
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton(
+                      heroTag:
+                          typeName == 'Age' ? 'decrease Age' : ' decrease Weight',
+                      onPressed: () {
+                        setState(() {
+                          typeName == 'Age' ? age-- : weight--;
+                        });
+                      },
+                      child: const Icon(Icons.remove, size: 30),
+                      mini: true,
+                    ),
+                    const SizedBox(width: 10),
+                    FloatingActionButton(
+                      heroTag:
+                          typeName == 'Age' ? 'Increase Age' : 'Increase Weight',
+                      onPressed: () {
+                        setState(() {
+                          typeName == 'Age' ? age++ : weight++;
+                        });
+                      },
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                      ),
+                      mini: true,
+                    ),
+                  ],
+                )
+              ],
             ),
-          )
-        : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width:200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: Colors.blueGrey,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    typeName == 'Age' ? 'Age' : 'Weight',
-                    style: Theme.of(context).textTheme.headline1,
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        typeName == 'Age' ? '$age' : '$weight',
-                        style: Theme.of(context).textTheme.headline2,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FloatingActionButton(
-                        heroTag: typeName == 'Age'
-                            ? 'decrease Age'
-                            : ' decrease Weight',
-                        onPressed: () {
-                          setState(() {
-                            typeName == 'Age' ? age-- : weight--;
-                          });
-                        },
-                        child: const Icon(Icons.remove, size: 30),
-                        mini: true,
-                      ),
-                      const SizedBox(width: 10),
-                      FloatingActionButton(
-                        heroTag: typeName == 'Age'
-                            ? 'Increase Age'
-                            : 'Increase Weight',
-                        onPressed: () {
-                          setState(() {
-                            typeName == 'Age' ? age++ : weight++;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.add,
-                          size: 30,
-                        ),
-                        mini: true,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+                ),
           );
+
+
+
+
+      
+
   }
 }
